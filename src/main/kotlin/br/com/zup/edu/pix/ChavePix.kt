@@ -1,5 +1,7 @@
 package br.com.zup.edu.pix
 
+import br.com.zup.edu.pix.TipoDeChave
+import br.com.zup.edu.TipoDeConta
 import br.com.zup.edu.validation.ValidUUID
 import java.time.Instant
 import java.util.*
@@ -18,15 +20,15 @@ class ChavePix(
     @field:NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val tipoDeChave: TipoDeChave,
+    val tipoDeChave: br.com.zup.edu.pix.TipoDeChave,
 
     @field:NotBlank
-    val chave: String,
+    var chave: String,
 
     @field:NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val tipoDeConta: TipoDeConta,
+    val tipoDeConta: br.com.zup.edu.pix.TipoDeConta,
 
     @field:Valid
     @Embedded
@@ -47,6 +49,18 @@ class ChavePix(
     val criadoEm = Instant.now()
 
     override fun toString(): String {
-        return "ChavePix(clientId=$clientId, tipoDaChave=$tipoDeChave, chave='$chave', tipoDaConta=$tipoDeConta, id=$id)"
+        return "ChavePix(clientId=$clientId, tipoDeChave=$tipoDeChave, chave='$chave', tipoDaConta=$tipoDeConta, id=$id)"
+    }
+
+    fun isAleatoria(): Boolean = tipoDeChave == TipoDeChave.CHAVE_ALEATORIA
+
+    fun pertenceAo(clienteId: UUID) = this.clientId == clienteId
+
+    fun atualiza(key: String): Boolean {
+        if(isAleatoria()){
+            this.chave = key
+            return true
+        }
+        return false
     }
 }

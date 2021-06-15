@@ -8,6 +8,8 @@ import br.com.zup.edu.TipoDeConta
 
 import br.com.zup.edu.pix.*
 import io.grpc.ManagedChannel
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
@@ -18,6 +20,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import java.util.*
@@ -66,6 +69,86 @@ internal class RegistraChaveEndpointTest(
         }
     }
 
+    @Test
+    fun `nao deve registrar chave pix quando chave existente`() {
+        // cenário
+        repository.save(chave(
+            tipo = TipoDeChave.CPF,
+            chave = "63657520325",
+            clienteId = CLIENTE_ID
+        ))
+
+        // ação
+        val thrown = assertThrows<StatusRuntimeException> {
+            grpcClient.registra(RegistraChavePixRequest.newBuilder()
+                .setClientId(CLIENTE_ID.toString())
+                .setTipoDeChave(TipoDeChave.CPF)
+                .setChave("63657520325")
+                .setTipoDeConta(TipoDeConta.CONTA_CORRENTE)
+                .build())
+        }
+
+        // validação
+        with(thrown) {
+            assertEquals(Status.ALREADY_EXISTS.code, status.code)
+            assertEquals("Chave Pix '63657520325' existente", status.description)
+        }
+    }
+
+    @Test
+    fun `nao deve registrar chave pix quando nao encontrar dados da conta cliente`() {
+        // cenário
+        `when`(itauClient.buscaContaPorTipo(clienteId = CLIENTE_ID.toString(), tipo = "CONTA_CORRENTE"))
+            .thenReturn(HttpResponse.notFound())
+
+        // ação
+        val thrown = assertThrows<StatusRuntimeException> {
+            grpcClient.registra(RegistraChavePixRequest.newBuilder()
+                .setClientId(CLIENTE_ID.toString())
+                .setTipoDeChave(TipoDeChave.EMAIL)
+                .setChave("rponte@gmail.com")
+                .setTipoDeConta(TipoDeConta.CONTA_CORRENTE)
+                .build())
+        }
+
+        // validação
+        with(thrown) {
+            assertEquals(Status.FAILED_PRECONDITION.code, status.code)
+            assertEquals("Cliente não encontrado no Itau", status.description)
+        }
+    }
+
+    @Test
+    fun `nao deve registrar chave pix quando parametros forem invalidos`() {
+        // ação
+        val thrown = assertThrows<StatusRuntimeException> {
+            grpcClient.registra(RegistraChavePixRequest.newBuilder().build())
+        }
+
+        // validação
+        with(thrown) {
+            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+            assertEquals("Dados inválidos", status.description)
+        }
+    }
+
+    @Test
+    fun `nao deve registrar chave pix quando parametros forem invalidos - chave invalida`() {
+        val thrown = assertThrows<StatusRuntimeException> {
+            grpcClient.registra(RegistraChavePixRequest.newBuilder()
+                .setClientId(CLIENTE_ID.toString())
+                .setTipoDeChave(TipoDeChave.CPF)
+                .setChave("378.930.cpf-invalido.389-73")
+                .setTipoDeConta(TipoDeConta.CONTA_POUPANCA)
+                .build())
+        }
+
+        with(thrown) {
+            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+            assertEquals("Dados inválidos", status.description)
+        }
+    }
+
     @MockBean(ErpItauClient::class)
     fun itauClient(): ErpItauClient? {
         return Mockito.mock(ErpItauClient::class.java)
@@ -87,6 +170,26 @@ internal class RegistraChaveEndpointTest(
             agencia = "1218",
             numero = "291900",
             titular = TitularResponse(id = CLIENTE_ID, "Rafael Ponte", "63657520325")
+        )
+    }
+
+    private fun chave(
+        tipo: TipoDeChave,
+        chave: String = UUID.randomUUID().toString(),
+        clienteId: UUID = UUID.randomUUID(),
+    ): ChavePix {
+        return ChavePix(
+            clientId = clienteId,
+            tipoDeChave = br.com.zup.edu.pix.TipoDeChave.CHAVE_ALEATORIA,
+            chave = chave,
+            tipoDeConta = br.com.zup.edu.pix.TipoDeConta.CONTA_CORRENTE,
+            conta = ContaAssociada(
+                instituicao = "UNIBANCO ITAU",
+                nomeDoTitular = "Rafael Ponte",
+                cpfDoTitular = "63657520325",
+                agencia = "1218",
+                numeroDaConta = "291900"
+            )
         )
     }
 }
