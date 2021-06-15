@@ -1,7 +1,7 @@
 package br.com.zup.edu.pix.registra
 
 import br.com.zup.edu.errors.exceptions.ChavePixExistenteException
-import br.com.zup.edu.externo.itau.ErpItau
+import br.com.zup.edu.externo.itau.ErpItauClient
 import br.com.zup.edu.pix.ChavePix
 import io.micronaut.validation.Validated
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.validation.Valid
 @Validated
 @Singleton
 class NovaChavePixService(@Inject val repository: ChavePixRepository,
-                          @Inject val erpItau: ErpItau
+                          @Inject val erpItau: ErpItauClient
 ) {
 
     @Transactional

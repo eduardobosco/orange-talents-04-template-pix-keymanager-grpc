@@ -1,5 +1,7 @@
 package br.com.zup.edu.pix
 
+import java.util.*
+
 data class DadosDaContaResponse(
     val tipo: String,
     val instituicao: InstituicaoResponse,
@@ -23,7 +25,7 @@ data class DadosDaContaResponse(
 }
 
 data class TitularResponse(
-    val id: String,
+    val id: UUID,
     val nome: String,
     val cpf: String
 )
