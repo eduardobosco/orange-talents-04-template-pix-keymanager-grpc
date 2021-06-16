@@ -75,7 +75,7 @@ internal class RegistraChaveEndpointTest(
         repository.save(chave(
             tipo = TipoDeChave.CPF,
             chave = "63657520325",
-            clienteId = CLIENTE_ID
+            clientId = CLIENTE_ID
         ))
 
         // ação
@@ -176,10 +176,10 @@ internal class RegistraChaveEndpointTest(
     private fun chave(
         tipo: TipoDeChave,
         chave: String = UUID.randomUUID().toString(),
-        clienteId: UUID = UUID.randomUUID(),
+        clientId: UUID = UUID.randomUUID(),
     ): ChavePix {
         return ChavePix(
-            clientId = clienteId,
+            clientId = clientId,
             tipoDeChave = br.com.zup.edu.pix.TipoDeChave.CHAVE_ALEATORIA,
             chave = chave,
             tipoDeConta = br.com.zup.edu.pix.TipoDeConta.CONTA_CORRENTE,
