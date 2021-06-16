@@ -7,8 +7,13 @@ option objc_class_prefix = "HLW";
 
 package br.com.zup.edu;
 
-service KeyManagerGrpcService {
+service KeyManagerRegistraGrpcService {
   rpc registra (RegistraChavePixRequest) returns (ListaChavePixResponse) {}
+
+}
+
+service KeyManagerRemoveGrpcService {
+  rpc remove (RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
 
 }
 
@@ -38,4 +43,14 @@ message RegistraChavePixRequest {
 message ListaChavePixResponse {
   string clientId = 1;
   string pixId = 2;
+}
+
+message RemoveChavePixRequest{
+  string clientId = 1;
+  string pixId = 2;
+}
+
+message RemoveChavePixResponse{
+  string ClientId = 1;
+  string PixId = 2;
 }

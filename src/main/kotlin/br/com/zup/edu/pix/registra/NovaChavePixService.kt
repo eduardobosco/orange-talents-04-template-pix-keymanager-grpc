@@ -19,11 +19,11 @@ class NovaChavePixService(@Inject val repository: ChavePixRepository,
     fun registra(@Valid novaChavePix: NovaChavePix?): ChavePix {
         //Verifica se a chave ja existe no sistema
         if(repository.existsByChave(novaChavePix!!.chave)) {
-            throw ChavePixExistenteException("Chave '${novaChavePix!!.chave}' ja cadastrada")
+            throw ChavePixExistenteException("Chave '${novaChavePix.chave}' ja cadastrada")
         }
 
         //consulta no sistema do ERP do ITAU
-        val erpItauResponse = erpItau.buscaContaPorTipo(novaChavePix?.clientId!!, novaChavePix.tipoDeConta!!.name)
+        val erpItauResponse = erpItau.buscaContaPorTipo(novaChavePix.clientId, novaChavePix.tipoDeConta!!.name)
         val conta = erpItauResponse.body()?.toModel() ?: throw IllegalStateException("Cliente nao encontrado no itau")
 
         //salva no banco de dados
