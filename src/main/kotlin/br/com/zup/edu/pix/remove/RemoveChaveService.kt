@@ -27,7 +27,7 @@ class RemoveChaveService(@Inject val repository: ChavePixRepository) {
         val uuidPixId = UUID.fromString(pixId)
         val uuidClienteId = UUID.fromString((clientId))
 
-        val chave = repository.findByIdAndClienteId(uuidPixId, uuidClienteId)
+        val chave = repository.findByIdAndClientId(uuidPixId, uuidClienteId)
             .orElseThrow{ChavePixNaoEncontradaException("Chave Pix não encontrada ou não pertence ao cliente")}
 
         repository.deleteById(uuidPixId)
