@@ -5,7 +5,7 @@ import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator
 
 enum class TipoDeChave {
 
-    CHAVE_ALEATORIA{
+    ALEATORIA{
         override fun valida(chave: String?)= chave.isNullOrEmpty() //não deve se preenchida
     },
     CPF {
@@ -20,7 +20,7 @@ enum class TipoDeChave {
             }
         }
     },
-    TEL_CELULAR{
+    CELULAR{
         override fun valida(chave: String?): Boolean {
             if (chave.isNullOrEmpty()){
                 return false

@@ -37,7 +37,7 @@ data class NovaChavePix(
             tipoDeChave = valueOf(this.tipoDeChave!!.name),
             tipoDeConta = TipoDeConta.valueOf(this.tipoDeConta!!.name),
             //se o tipo da chave for aleatorio entao ira gerar uma chave aleatoria, senao ira pegar a chave que esta vindo
-            chave = if(this.tipoDeChave == TipoDeChave.CHAVE_ALEATORIA) UUID.randomUUID().toString() else this.chave,
+            chave = if(this.tipoDeChave == TipoDeChave.ALEATORIA) UUID.randomUUID().toString() else this.chave,
             conta = conta
         )
     }

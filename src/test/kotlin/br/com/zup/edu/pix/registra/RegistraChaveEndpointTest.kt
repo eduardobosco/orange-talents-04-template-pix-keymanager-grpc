@@ -91,7 +91,7 @@ internal class RegistraChaveEndpointTest(
         // validação
         with(thrown) {
             assertEquals(Status.ALREADY_EXISTS.code, status.code)
-            assertEquals("Chave Pix '63657520325' existente", status.description)
+            assertEquals("Chave Pix '63657520325' ja cadastrada", status.description)
         }
     }
 
@@ -114,7 +114,7 @@ internal class RegistraChaveEndpointTest(
         // validação
         with(thrown) {
             assertEquals(Status.FAILED_PRECONDITION.code, status.code)
-            assertEquals("Cliente não encontrado no Itau", status.description)
+            assertEquals("Cliente nao encontrado no itau", status.description)
         }
     }
 
@@ -127,8 +127,8 @@ internal class RegistraChaveEndpointTest(
 
         // validação
         with(thrown) {
-            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
-            assertEquals("Dados inválidos", status.description)
+            assertEquals(Status.UNKNOWN.code, status.code)
+            assertEquals("Dados invalidos", status.description)
         }
     }
 
