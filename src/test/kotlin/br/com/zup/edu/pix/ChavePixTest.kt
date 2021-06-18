@@ -12,7 +12,7 @@ internal class ChavePixTest {
         val clienteId = UUID.randomUUID()
         val outroClienteId = UUID.randomUUID()
 
-        with (newChave(tipo = TipoDeChave.CHAVE_ALEATORIA, clienteId = clienteId)) {
+        with (newChave(tipo = TipoDeChave.ALEATORIA, clienteId = clienteId)) {
             assertTrue(this.pertenceAo(clienteId))
             assertFalse(this.pertenceAo(outroClienteId))
         }
@@ -20,14 +20,14 @@ internal class ChavePixTest {
 
     @Test
     internal fun `deve ser chave do tipo aleatoria`() {
-        with (newChave(tipo = TipoDeChave.CHAVE_ALEATORIA)) {
+        with (newChave(tipo = TipoDeChave.ALEATORIA)) {
             assertTrue(this.isAleatoria())
         }
     }
 
     @Test
     internal fun `nao deve ser chave do tipo aleatoria`() {
-        with(newChave(tipo = TipoDeChave.TEL_CELULAR)) {
+        with(newChave(tipo = TipoDeChave.CELULAR)) {
             assertFalse(this.isAleatoria())
         }
     }
@@ -48,7 +48,7 @@ internal class ChavePixTest {
 
         val original = "asuhasiuhasdikuhds"
 
-        with(newChave(tipo = TipoDeChave.CHAVE_ALEATORIA, chave = original)) {
+        with(newChave(tipo = TipoDeChave.ALEATORIA, chave = original)) {
             assertTrue(atualiza("hahahahaha"))
             assertTrue(this.chave != original)
         }

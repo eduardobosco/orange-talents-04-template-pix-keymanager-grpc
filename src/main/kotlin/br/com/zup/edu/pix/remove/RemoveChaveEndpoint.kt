@@ -5,21 +5,23 @@ import br.com.zup.edu.RemoveChavePixRequest
 import br.com.zup.edu.RemoveChavePixResponse
 import br.com.zup.edu.validation.ErrorHandler
 import io.grpc.stub.StreamObserver
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @ErrorHandler
 @Singleton
-class RemoveChaveEndpoint(private val service : RemoveChaveService):
+class RemoveChaveEndpoint(@Inject val service : RemoveChaveService):
     KeyManagerRemoveGrpcServiceGrpc.KeyManagerRemoveGrpcServiceImplBase (){
 
-    override fun remove(request: RemoveChavePixRequest,
-                        responseObserver: StreamObserver<RemoveChavePixResponse>
+    override fun remove(request: RemoveChavePixRequest?,
+                        responseObserver: StreamObserver<RemoveChavePixResponse>?
     ) {
-        service.remove(clientId = request.clientId, pixId = request.pixId)
+        service.remove(clientId = request!!.clientId, pixId = request.pixId)
 
-        responseObserver.onNext(RemoveChavePixResponse.newBuilder()
+        responseObserver!!.onNext(RemoveChavePixResponse.newBuilder()
             .setClientId(request.clientId)
-            .setPixId(request.pixId).build())
+            .setPixId(request.pixId)
+            .build())
 
         responseObserver.onCompleted()
 

@@ -1,6 +1,7 @@
 package br.com.zup.edu.pix.remove
 
 import br.com.zup.edu.errors.exceptions.ChavePixNaoEncontradaException
+import br.com.zup.edu.errors.exceptions.PermissaoNegadaException
 import br.com.zup.edu.externo.bcb.BancoCentralClient
 import br.com.zup.edu.externo.bcb.DeletePixKeyRequest
 import br.com.zup.edu.pix.registra.ChavePixRepository
@@ -23,29 +24,29 @@ class RemoveChaveService(@Inject val repository: ChavePixRepository,
 
     @Transactional
     fun remove(
-        @NotBlank
-        @ValidUUID(message = "Cliente ID com formato invalido") clientId: String?,
-
-        @NotBlank
-        @ValidUUID(message = "pix ID com formato inválido") pixId: String?,
-
-        ) {
-
+        @NotBlank @ValidUUID(message = "Cliente ID com formato invalido") clientId: String?,
+        @NotBlank @ValidUUID(message = "Pix ID com formato invalido") pixId: String?
+    ) {
         val uuidPixId = UUID.fromString(pixId)
-        val uuidClienteId = UUID.fromString((clientId))
+        val uuidClientId = UUID.fromString(clientId)
 
-        val chave = repository.findByIdAndClientId(uuidPixId, uuidClienteId)
-            .orElseThrow{ChavePixNaoEncontradaException("Chave pix nao cadastrada ou nao pertence ao cliente")}
+        val chave = repository.findByPixId(uuidPixId)
 
-        repository.deleteById(uuidPixId)
+        if (chave.isEmpty)
+            throw ChavePixNaoEncontradaException("Chave Pix '${uuidPixId}' não existe")
 
-        val request = DeletePixKeyRequest(chave.chave)
-
-        val bcbResponse = bcbClient.delete(key = chave.chave, request = request)
-        if (bcbResponse.status != HttpStatus.OK){
-            throw IllegalStateException("Erro ao remover chave Pix no Banco Central do Brasil (BCB)")
+        if (chave.get().clientId.toString() != uuidClientId.toString()) {
+            throw PermissaoNegadaException("Cliente não tem permissão para apagar essa chave")
         }
 
+        val request = DeletePixKeyRequest(chave.get().chave)
+
+        val bcbResponse = bcbClient.delete(request = request, key = chave.get().chave)
+        check(bcbResponse.status != HttpStatus.NOT_FOUND) { "Chave não existe" }
+        check(bcbResponse.status != HttpStatus.FORBIDDEN) { "Não foi possivel cadastrar chave no BCB" }
+        check(bcbResponse.status == HttpStatus.OK) { "Falha na remoção de chave no BCB" }
+
+        repository.delete(chave.get())
     }
 
 }

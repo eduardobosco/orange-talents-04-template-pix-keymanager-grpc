@@ -23,7 +23,7 @@ interface BancoCentralClient {
         produces = [MediaType.APPLICATION_XML],
         consumes = [MediaType.APPLICATION_XML]
     )
-    fun delete(@PathVariable key: String, @Body request: DeletePixKeyRequest): HttpResponse<DeletePixKeyResponse>
+    fun delete(@PathVariable("key") key: String, @Body request: DeletePixKeyRequest): HttpResponse<DeletePixKeyResponse>
 
     @Get("/api/v1/pix/keys/{key}",
         consumes = [MediaType.APPLICATION_XML])

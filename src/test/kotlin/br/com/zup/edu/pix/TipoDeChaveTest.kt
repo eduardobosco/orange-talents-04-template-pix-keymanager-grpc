@@ -11,7 +11,7 @@ internal class TipoChaveTest {
     inner class ALEATORIA { // facilita a visualização na execução dos testes
         @Test
         internal fun `deve ser valido quando chave aleatoria for nula ou vazia`() {
-            with(TipoDeChave.CHAVE_ALEATORIA) {
+            with(TipoDeChave.ALEATORIA) {
                 assertTrue(valida(null))
                 assertTrue(valida(""))
             }
@@ -19,7 +19,7 @@ internal class TipoChaveTest {
 
         @Test
         internal fun `nao deve ser valido quando chave aleatoria possuir um valor`() {
-            with(TipoDeChave.CHAVE_ALEATORIA) {
+            with(TipoDeChave.ALEATORIA) {
                 assertFalse(valida("qualquer coisa"))
             }
         }
@@ -55,14 +55,14 @@ internal class TipoChaveTest {
 
         @Test
         internal fun `deve retornar true quando celular for um numero valido`() {
-            with(TipoDeChave.TEL_CELULAR) {
+            with(TipoDeChave.CELULAR) {
                 assertTrue(valida("+5511987654321"))
             }
         }
 
         @Test
         internal fun `nao deve ser valido quando celular for um numero invalido`() {
-            with(TipoDeChave.TEL_CELULAR) {
+            with(TipoDeChave.CELULAR) {
                 assertFalse(valida("11987654321"))
                 assertFalse(valida("+55a11987654321"))
             }
@@ -70,7 +70,7 @@ internal class TipoChaveTest {
 
         @Test
         internal fun `nao deve ser valido quando celular nao for informado`() {
-            with(TipoDeChave.TEL_CELULAR) {
+            with(TipoDeChave.CELULAR) {
                 assertFalse(valida(""))
                 assertFalse(valida(null))
             }

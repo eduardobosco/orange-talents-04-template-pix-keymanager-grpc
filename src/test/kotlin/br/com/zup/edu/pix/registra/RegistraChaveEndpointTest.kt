@@ -180,7 +180,7 @@ internal class RegistraChaveEndpointTest(
     ): ChavePix {
         return ChavePix(
             clientId = clientId,
-            tipoDeChave = br.com.zup.edu.pix.TipoDeChave.CHAVE_ALEATORIA,
+            tipoDeChave = br.com.zup.edu.pix.TipoDeChave.ALEATORIA,
             chave = chave,
             tipoDeConta = br.com.zup.edu.pix.TipoDeConta.CONTA_CORRENTE,
             conta = ContaAssociada(
