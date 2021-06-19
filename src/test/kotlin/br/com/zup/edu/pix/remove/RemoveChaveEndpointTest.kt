@@ -2,6 +2,9 @@ package br.com.zup.edu.pix.remove
 
 import br.com.zup.edu.KeyManagerRemoveGrpcServiceGrpc
 import br.com.zup.edu.RemoveChavePixRequest
+import br.com.zup.edu.externo.bcb.BancoCentralClient
+import br.com.zup.edu.externo.bcb.DeletePixKeyRequest
+import br.com.zup.edu.externo.bcb.DeletePixKeyResponse
 import br.com.zup.edu.pix.ChavePix
 import br.com.zup.edu.pix.ContaAssociada
 import br.com.zup.edu.pix.TipoDeChave
@@ -21,6 +24,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
@@ -34,6 +39,9 @@ internal class RemoveChaveEndpointTest(
 
     lateinit var CHAVE_EXISTENTE: ChavePix
 
+    @Inject
+    lateinit var bcbClient: BancoCentralClient;
+
     @BeforeEach
     fun setup(){
         CHAVE_EXISTENTE = repository.save(chave(
@@ -44,16 +52,25 @@ internal class RemoveChaveEndpointTest(
     }
 
     @Test
-    fun`deve remover chave pix existente`(){
-        //ação
+    fun `deve remover chave pix existente`() {
+//        // cenário
+//        `when`(bcbClient.delete("rponte@gmail.com", DeletePixKeyRequest("rponte@gmail.com")))
+//            .thenReturn(HttpResponse.ok(DeletePixKeyResponse(key = "rponte@gmail.com",
+//                participant = ContaAssociada.ITAU_UNIBANCO_ISPB,
+//                deletedAt = LocalDateTime.now()))
+//            )
+
+        // ação
         val response = grpcCliente.remove(RemoveChavePixRequest.newBuilder()
             .setPixId(CHAVE_EXISTENTE.id.toString())
             .setClientId(CHAVE_EXISTENTE.clientId.toString())
             .build())
 
-        //validação
-        assertEquals(CHAVE_EXISTENTE.id.toString(), response.pixId)
-        assertEquals(CHAVE_EXISTENTE.clientId.toString(), response.clientId)
+        // validação
+        with(response) {
+            assertEquals(CHAVE_EXISTENTE.id.toString(), pixId)
+            assertEquals(CHAVE_EXISTENTE.clientId.toString(), clientId)
+        }
     }
 
 
@@ -109,6 +126,10 @@ internal class RemoveChaveEndpointTest(
         }
     }
 
+    @MockBean(BancoCentralClient::class)
+    fun bcbClient(): BancoCentralClient? {
+        return mock(BancoCentralClient::class.java)
+    }
 
     private fun chave(
         tipoDaChave: TipoDeChave,
