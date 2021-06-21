@@ -8,7 +8,9 @@ import java.util.*
 @Repository
 interface ChavePixRepository : CrudRepository<ChavePix, UUID> {
     fun existsByChave(chave: String): Boolean
-    fun findByIdAndClientId(id: UUID, clientId: UUID): Optional<ChavePix>
+
     fun findByPixId(pixId: UUID): Optional<ChavePix>
+
+    fun findByChave(chave: String): Optional<ChavePix>
 
 }

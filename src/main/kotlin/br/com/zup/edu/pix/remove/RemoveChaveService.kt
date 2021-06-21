@@ -33,7 +33,7 @@ class RemoveChaveService(@Inject val repository: ChavePixRepository,
         val chave = repository.findByPixId(uuidPixId)
 
         if (chave.isEmpty)
-            throw ChavePixNaoEncontradaException("Chave Pix '${uuidPixId}' não existe")
+            throw ChavePixNaoEncontradaException("Chave pix nao cadastrada ou nao pertence ao cliente")
 
         if (chave.get().clientId.toString() != uuidClientId.toString()) {
             throw PermissaoNegadaException("Cliente não tem permissão para apagar essa chave")
