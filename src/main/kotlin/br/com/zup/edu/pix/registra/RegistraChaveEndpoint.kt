@@ -2,8 +2,8 @@ package br.com.zup.edu.pix.registra
 
 
 import br.com.zup.edu.KeymanagerRegistraGrpcServiceGrpc
-import br.com.zup.edu.ListaChavePixResponse
 import br.com.zup.edu.RegistraChavePixRequest
+import br.com.zup.edu.RegistraChavePixResponse
 import br.com.zup.edu.validation.ErrorHandler
 import io.grpc.stub.StreamObserver
 import javax.inject.Inject
@@ -17,13 +17,13 @@ class RegistraChaveEndpoint(
 
     override fun registra(
         request: RegistraChavePixRequest,
-        responseObserver: StreamObserver<ListaChavePixResponse>
+        responseObserver: StreamObserver<RegistraChavePixResponse>
     ) {
         val novaChave = request.toModel()
         val chaveCriada = service.registra(novaChave)
 
         responseObserver.onNext(
-            ListaChavePixResponse.newBuilder()
+            RegistraChavePixResponse.newBuilder()
                 .setClientId(chaveCriada.clientId.toString())
                 .setPixId(chaveCriada.pixId.toString())
                 .build()

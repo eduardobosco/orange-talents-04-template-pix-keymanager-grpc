@@ -11,7 +11,7 @@ package br.com.zup.edu;
 
 service KeymanagerRegistraGrpcService {
 
-  rpc registra(RegistraChavePixRequest) returns (ListaChavePixResponse) {}
+  rpc registra(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
 
 }
 
@@ -24,6 +24,12 @@ service KeymanagerRemoveGrpcService {
 service KeymanagerCarregaGrpcService {
 
   rpc carrega(CarregaChavePixRequest) returns (CarregaChavePixResponse) {}
+
+}
+
+service KeymanagerListaGrpcService {
+
+  rpc lista(ListaChavePixRequest) returns (ListaChavePixResponse) {}
 
 }
 
@@ -50,7 +56,7 @@ message RegistraChavePixRequest {
   TipoDeConta tipoDeConta = 4;
 }
 
-message ListaChavePixResponse {
+message RegistraChavePixResponse {
   string clientId = 1;
   string pixId = 2;
 }
@@ -68,12 +74,12 @@ message RemoveChavePixResponse{
 message CarregaChavePixRequest {
   message FiltroPorPixId {
     string clientId = 1;
-    string pixId     = 2;
+    string pixId = 2;
   }
 
   oneof filtro {
-    FiltroPorPixId pixId  = 1;
-    string chave          = 2;
+    FiltroPorPixId pixId = 1;
+    string chave = 2;
   }
 }
 
@@ -82,21 +88,39 @@ message CarregaChavePixResponse {
   message ChavePix {
 
     message ContaInfo {
-      TipoDeConta tipo     = 1;
-      string instituicao   = 2; /** ITAU UNIBANCO */
+      TipoDeConta tipo = 1;
+      string instituicao = 2; /** ITAU UNIBANCO */
       string nomeDoTitular = 3;
-      string cpfDoTitular  = 4;
-      string agencia       = 5;
+      string cpfDoTitular = 4;
+      string agencia = 5;
       string numeroDaConta = 6;
     }
 
-    TipoDeChave tipo        = 1;
-    string chave            = 2;
-    ContaInfo conta         = 3;
+    TipoDeChave tipo = 1;
+    string chave = 2;
+    ContaInfo conta = 3;
     google.protobuf.Timestamp criadaEm = 4;
   }
 
   string clientId = 1;
-  string pixId     = 2;
-  ChavePix chave   = 3;
+  string pixId = 2;
+  ChavePix chave = 3;
 }
+
+message ListaChavePixRequest{
+  string clientId = 1;
+}
+
+message ListaChavePixResponse{
+
+  message ChavePix{
+    string pixId = 1;
+    TipoDeChave tipo = 2;
+    string chave = 3;
+    TipoDeConta tipoDeConta = 4;
+    google.protobuf.Timestamp criadaEm = 5;
+  }
+  string clientId = 1;
+  repeated ChavePix chaves = 2;
+}
+
