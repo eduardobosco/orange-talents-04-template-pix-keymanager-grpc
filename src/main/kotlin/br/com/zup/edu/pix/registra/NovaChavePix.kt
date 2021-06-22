@@ -6,7 +6,7 @@ import br.com.zup.edu.pix.ChavePix
 import br.com.zup.edu.pix.ContaAssociada
 import br.com.zup.edu.pix.TipoDeChave
 import br.com.zup.edu.pix.TipoDeChave.*
-import br.com.zup.edu.pix.TipoDeConta
+import br.com.zup.edu.TipoDeConta
 import br.com.zup.edu.validation.ValidPixKey
 import io.micronaut.core.annotation.Introspected
 import java.util.*

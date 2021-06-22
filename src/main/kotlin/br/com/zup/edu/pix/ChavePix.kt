@@ -1,9 +1,7 @@
 package br.com.zup.edu.pix
 
-import br.com.zup.edu.pix.TipoDeChave
 import br.com.zup.edu.TipoDeConta
 import br.com.zup.edu.validation.ValidUUID
-import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -21,7 +19,7 @@ class ChavePix(
     @field:NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val tipoDeChave: br.com.zup.edu.pix.TipoDeChave,
+    val tipoDeChave: TipoDeChave,
 
     @field:NotBlank
     var chave: String,
@@ -29,7 +27,7 @@ class ChavePix(
     @field:NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val tipoDeConta: br.com.zup.edu.pix.TipoDeConta,
+    val tipoDeConta: TipoDeConta,
 
     @field:Valid
     @Embedded

@@ -3,6 +3,7 @@ package br.com.zup.edu.pix
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.util.*
+import br.com.zup.edu.TipoDeConta
 
 internal class ChavePixTest {
 

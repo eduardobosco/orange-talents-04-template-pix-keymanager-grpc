@@ -4,7 +4,7 @@ import br.com.zup.edu.RegistraChavePixRequest
 import br.com.zup.edu.TipoDeChave.UNKNOWN_TIPO_CHAVE
 import br.com.zup.edu.TipoDeConta.UNKNOWN_TIPO_CONTA
 import br.com.zup.edu.pix.TipoDeChave
-import br.com.zup.edu.pix.TipoDeConta
+import br.com.zup.edu.TipoDeConta
 
 fun RegistraChavePixRequest.toModel(): NovaChavePix {
     return NovaChavePix(

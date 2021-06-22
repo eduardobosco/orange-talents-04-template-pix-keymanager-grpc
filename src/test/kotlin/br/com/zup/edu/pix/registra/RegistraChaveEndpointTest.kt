@@ -212,7 +212,7 @@ internal class RegistraChaveEndpointTest(
             clientId = clientId,
             tipoDeChave = br.com.zup.edu.pix.TipoDeChave.ALEATORIA,
             chave = chave,
-            tipoDeConta = br.com.zup.edu.pix.TipoDeConta.CONTA_CORRENTE,
+            tipoDeConta = TipoDeConta.CONTA_CORRENTE,
             conta = ContaAssociada(
                 instituicao = "UNIBANCO ITAU",
                 nomeDoTitular = "Rafael Ponte",

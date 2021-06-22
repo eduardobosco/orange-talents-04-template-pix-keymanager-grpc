@@ -1,7 +1,7 @@
 package br.com.zup.edu.externo.bcb
 
 import br.com.zup.edu.pix.*
-import br.com.zup.edu.pix.TipoDeConta.*
+import br.com.zup.edu.TipoDeConta
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
@@ -92,8 +92,8 @@ data class PixKeyDetailsResponse (
             tipoDeChave = keyType.domainType!!,
             chave = this.key,
             tipoDeConta = when (this.bankAccount.accountType) {
-                BankAccount.AccountType.CACC -> CONTA_CORRENTE
-                BankAccount.AccountType.SVGS -> CONTA_POUPANCA
+                BankAccount.AccountType.CACC -> TipoDeConta.CONTA_CORRENTE
+                BankAccount.AccountType.SVGS -> TipoDeConta.CONTA_POUPANCA
             },
             conta = ContaAssociada(
                 instituicao = Instituicoes.nome(bankAccount.participant),
@@ -157,10 +157,10 @@ data class BankAccount(
         companion object {
             fun by(domainType: TipoDeConta): AccountType {
                 return when (domainType) {
-                    CONTA_CORRENTE -> CACC
-                    CONTA_POUPANCA -> SVGS
-                    UNKNOWN_TIPO_CONTA -> TODO()
-                    UNRECOGNIZED -> TODO()
+                    br.com.zup.edu.TipoDeConta.CONTA_CORRENTE -> CACC
+                    br.com.zup.edu.TipoDeConta.CONTA_POUPANCA -> SVGS
+                    br.com.zup.edu.TipoDeConta.UNKNOWN_TIPO_CONTA -> TODO()
+                    br.com.zup.edu.TipoDeConta.UNRECOGNIZED -> TODO()
                 }
             }
         }
