@@ -1,7 +1,10 @@
-package br.com.zup.edu.pix
+package br.com.zup.edu.pix.carrega
 
+import br.com.zup.edu.pix.ChavePix
+import br.com.zup.edu.pix.ContaAssociada
+import br.com.zup.edu.pix.TipoDeChave
+import br.com.zup.edu.pix.TipoDeConta
 import java.time.LocalDateTime
-import java.time.Instant
 import java.util.*
 
 data class ChavePixInfo(

@@ -4,6 +4,7 @@ import br.com.zup.edu.pix.TipoDeChave
 import br.com.zup.edu.TipoDeConta
 import br.com.zup.edu.validation.ValidUUID
 import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 import javax.validation.Valid
@@ -44,9 +45,8 @@ class ChavePix(
     @Column(nullable = false)
     val pixId = UUID.randomUUID()
 
-    @NotNull
     @Column(nullable = false)
-    val criadoEm = Instant.now()
+    val criadaEm: LocalDateTime = LocalDateTime.now()
 
     override fun toString(): String {
         return "ChavePix(clientId=$clientId, tipoDeChave=$tipoDeChave, chave='$chave', tipoDaConta=$tipoDeConta, id=$id)"

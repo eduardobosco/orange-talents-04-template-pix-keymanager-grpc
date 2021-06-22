@@ -2,7 +2,7 @@ package br.com.zup.edu.pix.carrega
 
 import br.com.zup.edu.CarregaChavePixRequest
 import br.com.zup.edu.CarregaChavePixResponse
-import br.com.zup.edu.KeyManagerCarregaGrpcServiceGrpc
+import br.com.zup.edu.KeymanagerCarregaGrpcServiceGrpc
 import br.com.zup.edu.externo.bcb.BancoCentralClient
 import br.com.zup.edu.pix.registra.ChavePixRepository
 import br.com.zup.edu.validation.ErrorHandler
@@ -11,23 +11,24 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import javax.validation.Validator
 
-@ErrorHandler
+@ErrorHandler // 1
 @Singleton
 class CarregaChaveEndpoint(
-    @Inject private val repository: ChavePixRepository,
-    @Inject private val bcbClient : BancoCentralClient,
-    @Inject private val validator : Validator,
-): KeyManagerCarregaGrpcServiceGrpc.KeyManagerCarregaGrpcServiceImplBase() {
+    @Inject private val repository: ChavePixRepository, // 1
+    @Inject private val bcbClient: BancoCentralClient, // 1
+    @Inject private val validator: Validator,
+) :KeymanagerCarregaGrpcServiceGrpc.KeymanagerCarregaGrpcServiceImplBase() { // 1
 
-    override fun carrega(request: CarregaChavePixRequest,
-                         responseObserver: StreamObserver<CarregaChavePixResponse>
+    // 9
+    override fun carrega(
+        request: CarregaChavePixRequest, // 1
+        responseObserver: StreamObserver<CarregaChavePixResponse>, // 1
     ) {
 
-        val filtro = request.toModel(validator)
+        val filtro = request.toModel(validator) // 2
         val chaveInfo = filtro.filtra(repository = repository, bcbClient = bcbClient)
 
-        responseObserver.onNext(CarregaChavePixResponseConverter().converter(chaveInfo))
+        responseObserver.onNext(CarregaChavePixResponseConverter().converter(chaveInfo)) // 1
         responseObserver.onCompleted()
-
     }
 }

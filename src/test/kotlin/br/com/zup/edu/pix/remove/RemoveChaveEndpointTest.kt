@@ -1,10 +1,9 @@
 package br.com.zup.edu.pix.remove
 
-import br.com.zup.edu.KeyManagerRemoveGrpcServiceGrpc
+
+import br.com.zup.edu.KeymanagerRemoveGrpcServiceGrpc
 import br.com.zup.edu.RemoveChavePixRequest
 import br.com.zup.edu.externo.bcb.BancoCentralClient
-import br.com.zup.edu.externo.bcb.DeletePixKeyRequest
-import br.com.zup.edu.externo.bcb.DeletePixKeyResponse
 import br.com.zup.edu.pix.ChavePix
 import br.com.zup.edu.pix.ContaAssociada
 import br.com.zup.edu.pix.TipoDeChave
@@ -16,17 +15,12 @@ import io.grpc.StatusRuntimeException
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpStatus
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,7 +28,7 @@ import javax.inject.Singleton
 @MicronautTest(transactional = false)
 internal class RemoveChaveEndpointTest(
     val repository: ChavePixRepository,
-    val grpcCliente: KeyManagerRemoveGrpcServiceGrpc.KeyManagerRemoveGrpcServiceBlockingStub
+    val grpcCliente: KeymanagerRemoveGrpcServiceGrpc.KeymanagerRemoveGrpcServiceBlockingStub
 ){
 
     lateinit var CHAVE_EXISTENTE: ChavePix
@@ -45,7 +39,7 @@ internal class RemoveChaveEndpointTest(
     @BeforeEach
     fun setup(){
         CHAVE_EXISTENTE = repository.save(chave(
-            tipoDaChave = TipoDeChave.EMAIL,
+            tipoDeChave = TipoDeChave.EMAIL,
             chave = "rponte@gmail.com",
             clientId = UUID.randomUUID()
         ))
@@ -72,8 +66,6 @@ internal class RemoveChaveEndpointTest(
             assertEquals(CHAVE_EXISTENTE.clientId.toString(), clientId)
         }
     }
-
-
 
     @Test
     fun `nao deve remover chave pix quando chave inexistente`() {
@@ -121,8 +113,8 @@ internal class RemoveChaveEndpointTest(
     @Factory
     class Clients  {
         @Singleton
-        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): KeyManagerRemoveGrpcServiceGrpc.KeyManagerRemoveGrpcServiceBlockingStub? {
-            return KeyManagerRemoveGrpcServiceGrpc.newBlockingStub(channel)
+        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): KeymanagerRemoveGrpcServiceGrpc.KeymanagerRemoveGrpcServiceBlockingStub? {
+            return KeymanagerRemoveGrpcServiceGrpc.newBlockingStub(channel)
         }
     }
 
@@ -132,13 +124,13 @@ internal class RemoveChaveEndpointTest(
     }
 
     private fun chave(
-        tipoDaChave: TipoDeChave,
+        tipoDeChave: TipoDeChave,
         chave: String = UUID.randomUUID().toString(),
         clientId: UUID = UUID.randomUUID(),
     ): ChavePix {
         return ChavePix(
             clientId = clientId,
-            tipoDeChave = tipoDaChave,
+            tipoDeChave = tipoDeChave,
             chave = chave,
             tipoDeConta = TipoDeConta.CONTA_CORRENTE,
             conta = ContaAssociada(

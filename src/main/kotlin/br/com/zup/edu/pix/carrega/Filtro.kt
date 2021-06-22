@@ -23,12 +23,12 @@ sealed class Filtro {
 
     @Introspected
     data class PorPixId(
-        @field:NotBlank @field:ValidUUID val clienteId: String, // 1
+        @field:NotBlank @field:ValidUUID val clientId: String, // 1
         @field:NotBlank @field:ValidUUID val pixId: String,
     ) : Filtro() { // 1
 
         fun pixIdAsUuid() = UUID.fromString(pixId)
-        fun clienteIdAsUuid() = UUID.fromString(clienteId)
+        fun clienteIdAsUuid() = UUID.fromString(clientId)
 
         override fun filtra(repository: ChavePixRepository, bcbClient: BancoCentralClient): ChavePixInfo {
             return repository.findById(pixIdAsUuid())

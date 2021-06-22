@@ -9,18 +9,21 @@ import "google/protobuf/timestamp.proto";
 
 package br.com.zup.edu;
 
-service KeyManagerRegistraGrpcService {
-  rpc registra (RegistraChavePixRequest) returns (ListaChavePixResponse) {}
+service KeymanagerRegistraGrpcService {
+
+  rpc registra(RegistraChavePixRequest) returns (ListaChavePixResponse) {}
 
 }
 
-service KeyManagerRemoveGrpcService {
-  rpc remove (RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
+service KeymanagerRemoveGrpcService {
+
+  rpc remove(RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
 
 }
 
-service KeyManagerCarregaGrpcService {
-  rpc carrega (CarregaChavePixRequest) returns (CarregaChavePixResponse) {}
+service KeymanagerCarregaGrpcService {
+
+  rpc carrega(CarregaChavePixRequest) returns (CarregaChavePixResponse) {}
 
 }
 
@@ -62,35 +65,38 @@ message RemoveChavePixResponse{
   string pixId = 2;
 }
 
-message CarregaChavePixRequest{
-  message FiltroPorPixId{
+message CarregaChavePixRequest {
+  message FiltroPorPixId {
     string clientId = 1;
-    string pixId = 2;
+    string pixId     = 2;
   }
-  oneof filtro{
-    FiltroPorPixId pixId = 1;
-    string chave = 2;
+
+  oneof filtro {
+    FiltroPorPixId pixId  = 1;
+    string chave          = 2;
   }
 }
 
-message CarregaChavePixResponse{
-  message ChavePix{
+message CarregaChavePixResponse {
+
+  message ChavePix {
 
     message ContaInfo {
-
-      TipoDeConta tipoDeConta = 1;
-      string instituicao = 2;
+      TipoDeConta tipo     = 1;
+      string instituicao   = 2; /** ITAU UNIBANCO */
       string nomeDoTitular = 3;
-      string cpfDoTitular = 4;
-      string agencia = 5;
+      string cpfDoTitular  = 4;
+      string agencia       = 5;
       string numeroDaConta = 6;
     }
-    TipoDeChave tipoDeChave = 1;
-    string chave = 2;
-    ContaInfo conta = 3;
+
+    TipoDeChave tipo        = 1;
+    string chave            = 2;
+    ContaInfo conta         = 3;
     google.protobuf.Timestamp criadaEm = 4;
   }
+
   string clientId = 1;
-  string pixId = 2;
-  ChavePix chave = 3;
+  string pixId     = 2;
+  ChavePix chave   = 3;
 }

@@ -1,12 +1,10 @@
 package br.com.zup.edu.pix.registra
 
-import br.com.zup.edu.KeyManagerRegistraGrpcServiceGrpc
-import br.com.zup.edu.RegistraChavePixRequest
-import br.com.zup.edu.externo.itau.ErpItauClient
+import br.com.zup.edu.*
 import br.com.zup.edu.TipoDeChave
 import br.com.zup.edu.TipoDeConta
 import br.com.zup.edu.externo.bcb.*
-
+import br.com.zup.edu.externo.itau.ErpItauClient
 import br.com.zup.edu.pix.*
 import io.grpc.ManagedChannel
 import io.grpc.Status
@@ -24,7 +22,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import org.testcontainers.shaded.org.bouncycastle.asn1.x500.style.RFC4519Style.owner
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
@@ -32,7 +29,7 @@ import javax.inject.Inject
 @MicronautTest(transactional = false)
 internal class RegistraChaveEndpointTest(
     val repository: ChavePixRepository,
-    val grpcClient: KeyManagerRegistraGrpcServiceGrpc.KeyManagerRegistraGrpcServiceBlockingStub
+    val grpcClient: KeymanagerRegistraGrpcServiceGrpc.KeymanagerRegistraGrpcServiceBlockingStub
 ) {
 
 
@@ -143,7 +140,7 @@ internal class RegistraChaveEndpointTest(
 
         // validação
         with(thrown) {
-            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+            assertEquals(Status.UNKNOWN.code, status.code)
             assertEquals("Dados inválidos", status.description)
         }
     }
@@ -191,8 +188,8 @@ internal class RegistraChaveEndpointTest(
     class Clients {
         @Bean
         fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel):
-                KeyManagerRegistraGrpcServiceGrpc.KeyManagerRegistraGrpcServiceBlockingStub? {
-            return KeyManagerRegistraGrpcServiceGrpc.newBlockingStub(channel)
+                KeymanagerRegistraGrpcServiceGrpc.KeymanagerRegistraGrpcServiceBlockingStub? {
+            return KeymanagerRegistraGrpcServiceGrpc.newBlockingStub(channel)
         }
     }
 
