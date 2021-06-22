@@ -15,11 +15,14 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
+import io.micronaut.http.HttpResponse
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import java.lang.RuntimeException
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
@@ -69,11 +72,13 @@ internal class CarregaChaveEndpointTest(
         // ação
         val response = grpcClient.carrega(
             CarregaChavePixRequest.newBuilder()
-            .setPixId(CarregaChavePixRequest.FiltroPorPixId.newBuilder()
-                .setPixId(chaveExistente.id.toString())
-                .setClientId(chaveExistente.clientId.toString())
-                .build()
-            ).build())
+                .setPixId(
+                    CarregaChavePixRequest.FiltroPorPixId.newBuilder()
+                        .setPixId(chaveExistente.id.toString())
+                        .setClientId(chaveExistente.clientId.toString())
+                        .build()
+                ).build()
+        )
 
         // validação
         with(response) {
@@ -85,20 +90,119 @@ internal class CarregaChaveEndpointTest(
     }
 
     @Test
-    fun`não deve carregar chave por pixId e clientId quando filtro inválido`(){
+    fun `não deve carregar chave por pixId e clientId quando filtro inválido`() {
         //ação
         val thrown = assertThrows<StatusRuntimeException> {
-            grpcClient.carrega(CarregaChavePixRequest.newBuilder()
-                .setPixId(CarregaChavePixRequest.FiltroPorPixId.newBuilder()
-                    .setPixId("")
-                    .setClientId("").build()).build())
+            grpcClient.carrega(
+                CarregaChavePixRequest.newBuilder()
+                    .setPixId(
+                        CarregaChavePixRequest.FiltroPorPixId.newBuilder()
+                            .setPixId("")
+                            .setClientId("").build()
+                    ).build()
+            )
         }
+        //validação
+        with(thrown) {
+            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+            assertEquals("Dados inválidos", status.description)
+            //TODO: extrair e validar os detalhes do erro (violations)
+        }
+    }
+
+    @Test
+    fun `nao deve carregar chave por pixId e clientId quando registro não existir`() {
+        //ação
+        val pixIdNaoExistente = UUID.randomUUID().toString()
+        val clientIdNaoExistente = UUID.randomUUID().toString()
+        val thrown = assertThrows<StatusRuntimeException> {
+            grpcClient.carrega(
+                CarregaChavePixRequest.newBuilder()
+                    .setPixId(
+                        CarregaChavePixRequest.FiltroPorPixId.newBuilder()
+                            .setPixId(pixIdNaoExistente)
+                            .setClientId(clientIdNaoExistente)
+                            .build()
+                    ).build()
+            )
+        }
+        //validação
+        with(thrown) {
+            assertEquals(Status.NOT_FOUND.code, status.code)
+            assertEquals("Chave Pix não encontrada", status.description)
+        }
+    }
+
+    @Test
+    fun `deve carregar chave por valor da chave quando registro existir localmente`() {
+        //cenario
+        val chaveExistente = repository.findByChave("rafael.ponte@zup.com.br").get()
+
+        //ação
+        val response = grpcClient.carrega(CarregaChavePixRequest.newBuilder()
+            .setChave("rafael.ponte@zup.com.br").build())
+
+        // validação
+        with(response) {
+            assertEquals(chaveExistente.id.toString(), this.pixId)
+            assertEquals(chaveExistente.clientId.toString(), this.clientId)
+            assertEquals(chaveExistente.tipoDeChave.name, this.chave.tipo.name)
+            assertEquals(chaveExistente.chave, this.chave.chave)
+        }
+
+    }
+
+    @Test
+    fun `deve carregar chave por valor da chave quando registro não existir localmente mas existir no banco central`(){
+    //cenario
+        val bcbResponse = pixKeyDetailsResponse()
+        `when`(bcbClient.findByKey(key="user.from.another.bank@santander.com.br"))
+            .thenReturn(HttpResponse.ok(pixKeyDetailsResponse()))
+
+        //ação
+        val response = grpcClient.carrega(CarregaChavePixRequest.newBuilder()
+            .setChave("user.from.another.bank@santander.com.br").build())
+
+        // validação
+        with(response) {
+            assertEquals("", this.pixId)
+            assertEquals("", this.clientId)
+            assertEquals(bcbResponse.keyType.name, this.chave.tipo.name)
+            assertEquals(bcbResponse.key, this.chave.chave)
+        }
+    }
+
+    @Test
+    fun `não deve carregar chave por valor da chave quando filtro for invalido`(){
+        //ação
+        val thrown =  assertThrows<StatusRuntimeException> {
+            grpcClient.carrega(CarregaChavePixRequest.newBuilder()
+                .setChave("").build())
+        }
+
         //validação
         with(thrown){
             assertEquals(Status.INVALID_ARGUMENT.code, status.code)
-            assertEquals("Dados Inválidos", status.description)
-            //TODO: extrair e validar os detalhes do erro (violations)
+            assertEquals("Dados inválidos", status.description)
+            //TODO: extrair e alidar os detalhes do erro (violations)
         }
+
+    }
+
+    @Test
+    fun`nao deve carregar chave quando filtro invalido`(){
+        //ação
+        val thrown =  assertThrows<StatusRuntimeException> {
+            grpcClient.carrega(CarregaChavePixRequest.newBuilder()
+                .build())
+        }
+
+        //validação
+        with(thrown) {
+            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+            assertEquals("Chave Pix inválida ou não informada", status.description)
+        }
+
     }
 
     @MockBean(BancoCentralClient::class)

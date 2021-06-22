@@ -4,6 +4,8 @@ package br.com.zup.edu.pix.remove
 import br.com.zup.edu.KeymanagerRemoveGrpcServiceGrpc
 import br.com.zup.edu.RemoveChavePixRequest
 import br.com.zup.edu.externo.bcb.BancoCentralClient
+import br.com.zup.edu.externo.bcb.DeletePixKeyRequest
+import br.com.zup.edu.externo.bcb.DeletePixKeyResponse
 import br.com.zup.edu.pix.ChavePix
 import br.com.zup.edu.pix.ContaAssociada
 import br.com.zup.edu.pix.TipoDeChave
@@ -15,12 +17,15 @@ import io.grpc.StatusRuntimeException
 import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
+import io.micronaut.http.HttpResponse
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,12 +52,15 @@ internal class RemoveChaveEndpointTest(
 
     @Test
     fun `deve remover chave pix existente`() {
-//        // cenário
-//        `when`(bcbClient.delete("rponte@gmail.com", DeletePixKeyRequest("rponte@gmail.com")))
-//            .thenReturn(HttpResponse.ok(DeletePixKeyResponse(key = "rponte@gmail.com",
-//                participant = ContaAssociada.ITAU_UNIBANCO_ISPB,
-//                deletedAt = LocalDateTime.now()))
-//            )
+        // cenário
+        `when`(bcbClient.delete("rponte@gmail.com", DeletePixKeyRequest("rponte@gmail.com")))
+            .thenReturn(
+                HttpResponse.ok(
+                    DeletePixKeyResponse(key = "rponte@gmail.com",
+                participant = ContaAssociada.ITAU_UNIBANCO_ISPB,
+                deletedAt = LocalDateTime.now())
+                )
+            )
 
         // ação
         val response = grpcCliente.remove(RemoveChavePixRequest.newBuilder()
