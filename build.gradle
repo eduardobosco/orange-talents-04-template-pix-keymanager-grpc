@@ -48,7 +48,9 @@ dependencies {
      */
     kaptTest "io.micronaut:micronaut-inject-java"
     testImplementation("org.mockito:mockito-core")
+    testImplementation("io.micronaut:micronaut-http-client")
     testImplementation("org.mockito:mockito-junit-jupiter:3.8.0")
+    testImplementation("org.mockito:mockito-inline:3.8.0")
     testImplementation("com.h2database:h2")
     testImplementation("org.hamcrest:hamcrest-core:2.2")
     testImplementation("org.testcontainers:junit-jupiter")

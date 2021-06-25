@@ -28,6 +28,7 @@ class CarregaChaveEndpoint(
         val filtro = request.toModel(validator) // 2
         val chaveInfo = filtro.filtra(repository = repository, bcbClient = bcbClient)
 
+
         responseObserver.onNext(CarregaChavePixResponseConverter().converter(chaveInfo)) // 1
         responseObserver.onCompleted()
     }

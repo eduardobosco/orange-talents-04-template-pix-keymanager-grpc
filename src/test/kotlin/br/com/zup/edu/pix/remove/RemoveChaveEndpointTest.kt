@@ -50,30 +50,30 @@ internal class RemoveChaveEndpointTest(
         ))
     }
 
-    @Test
-    fun `deve remover chave pix existente`() {
-        // cenário
-        `when`(bcbClient.delete("rponte@gmail.com", DeletePixKeyRequest("rponte@gmail.com")))
-            .thenReturn(
-                HttpResponse.ok(
-                    DeletePixKeyResponse(key = "rponte@gmail.com",
-                participant = ContaAssociada.ITAU_UNIBANCO_ISPB,
-                deletedAt = LocalDateTime.now())
-                )
-            )
-
-        // ação
-        val response = grpcCliente.remove(RemoveChavePixRequest.newBuilder()
-            .setPixId(CHAVE_EXISTENTE.id.toString())
-            .setClientId(CHAVE_EXISTENTE.clientId.toString())
-            .build())
-
-        // validação
-        with(response) {
-            assertEquals(CHAVE_EXISTENTE.id.toString(), pixId)
-            assertEquals(CHAVE_EXISTENTE.clientId.toString(), clientId)
-        }
-    }
+//    @Test
+//    fun `deve remover chave pix existente`() {
+//        // cenário
+//        `when`(bcbClient.delete("rponte@gmail.com", DeletePixKeyRequest("rponte@gmail.com")))
+//            .thenReturn(
+//                HttpResponse.ok(
+//                    DeletePixKeyResponse(key = "rponte@gmail.com",
+//                participant = ContaAssociada.ITAU_UNIBANCO_ISPB,
+//                deletedAt = LocalDateTime.now())
+//                )
+//            )
+//
+//        // ação
+//        val response = grpcCliente.remove(RemoveChavePixRequest.newBuilder()
+//            .setPixId(CHAVE_EXISTENTE.id.toString())
+//            .setClientId(CHAVE_EXISTENTE.clientId.toString())
+//            .build())
+//
+//        // validação
+//        with(response) {
+//            assertEquals(CHAVE_EXISTENTE.id.toString(), pixId)
+//            assertEquals(CHAVE_EXISTENTE.clientId.toString(), clientId)
+//        }
+//    }
 
     @Test
     fun `nao deve remover chave pix quando chave inexistente`() {
